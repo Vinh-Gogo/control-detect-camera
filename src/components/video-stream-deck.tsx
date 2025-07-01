@@ -30,6 +30,8 @@ export default function VideoStreamDeck() {
   const [currentTime, setCurrentTime] = useState("00:00");
   const [duration, setDuration] = useState("00:00");
   const [isControlsVisible, setIsControlsVisible] = useState(true);
+  const [currentFrame, setCurrentFrame] = useState(0);
+  const [totalFrames, setTotalFrames] = useState(0);
 
   const togglePlayPause = () => {
     if (videoRef.current) {
@@ -49,13 +51,18 @@ export default function VideoStreamDeck() {
       const current = video.currentTime;
       const total = video.duration;
       setCurrentTime(formatTime(current));
+      // Assuming 30fps for frame calculation. This is an approximation.
+      setCurrentFrame(Math.floor(current * 30));
       if (!isNaN(total) && total > 0) {
         setProgress((current / total) * 100);
       }
     };
     
     const handleLoadedMetadata = () => {
-      setDuration(formatTime(video.duration));
+      const duration = video.duration;
+      setDuration(formatTime(duration));
+      // Assuming 30fps for frame calculation. This is an approximation.
+      setTotalFrames(Math.floor(duration * 30));
     };
 
     const handleEnded = () => {
@@ -131,6 +138,8 @@ export default function VideoStreamDeck() {
       setProgress(0);
       setCurrentTime("00:00");
       setDuration("00:00");
+      setCurrentFrame(0);
+      setTotalFrames(0);
     }
   };
 
@@ -150,18 +159,23 @@ export default function VideoStreamDeck() {
 
   return (
     <>
-      <div className="flex justify-end mb-4">
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          accept="video/*"
-          className="hidden"
-        />
-        <Button onClick={handleUploadClick}>
-          <Upload className="mr-2 h-4 w-4" />
-          Upload Video
-        </Button>
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-sm font-mono text-muted-foreground">
+          Frame: {currentFrame} / {totalFrames > 0 ? totalFrames : '...'}
+        </div>
+        <div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="video/*"
+            className="hidden"
+          />
+          <Button onClick={handleUploadClick}>
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Video
+          </Button>
+        </div>
       </div>
       <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/10 bg-black">
         <CardContent className="p-0">
