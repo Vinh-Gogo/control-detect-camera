@@ -160,7 +160,10 @@ export default function VideoStreamDeck() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
       <div>
-        <div className="flex justify-end items-center mb-4 h-10">
+        <div className="flex justify-between items-center mb-4 h-12">
+          <Button className="btn-gradient text-lg font-semibold h-12">
+            AI Analysis
+          </Button>
           <div>
             <input
               type="file"
@@ -254,13 +257,10 @@ export default function VideoStreamDeck() {
         </Card>
       </div>
 
-      <div className="md:pt-[56px]">
+      <div className="md:pt-16">
         <Card>
           <CardContent className="p-6 text-center">
-            <Button className="btn-gradient w-full text-lg font-semibold h-12">
-              AI Analysis
-            </Button>
-            <div className="mt-8">
+            <div>
               <p className="text-sm font-semibold tracking-widest text-muted-foreground uppercase">Current Frame</p>
               <p className="text-7xl font-bold tracking-tighter text-primary my-2">{currentFrame}</p>
               <p className="text-sm text-muted-foreground">/ {totalFrames > 0 ? totalFrames : '...'}</p>
