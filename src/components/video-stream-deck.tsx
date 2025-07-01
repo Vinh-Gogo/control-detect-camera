@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type MouseEvent, type ChangeEvent } from "react";
-import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download, RefreshCw, Trash2 } from "lucide-react";
+import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download, RefreshCw, Trash2, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -22,17 +22,17 @@ const formatTime = (timeInSeconds: number) => {
 
 const FPS = 30;
 
-type ToggleState = {
-  trayWithFood: boolean;
-  trayWithoutFood: boolean;
-  food: boolean;
+type DetectionCounts = {
+  trayWithFood: number;
+  trayWithoutFood: number;
+  food: number;
 };
 
 type HistoryEntry = {
   id: number;
   currentFrame: number;
   totalFrames: number;
-  toggles: ToggleState;
+  counts: DetectionCounts;
   rating: 'T' | 'F';
 };
 
@@ -54,10 +54,10 @@ export default function VideoStreamDeck() {
   const [totalFrames, setTotalFrames] = useState(0);
   const [frameImageDataUrl, setFrameImageDataUrl] = useState<string | null>(null);
 
-  const [toggles, setToggles] = useState<ToggleState>({
-    trayWithFood: false,
-    trayWithoutFood: false,
-    food: false,
+  const [counts, setCounts] = useState<DetectionCounts>({
+    trayWithFood: 0,
+    trayWithoutFood: 0,
+    food: 0,
   });
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
@@ -213,8 +213,8 @@ export default function VideoStreamDeck() {
     }
   }, [videoSrc]);
 
-  const handleToggle = (key: keyof ToggleState) => {
-    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  const handleIncrement = (key: keyof DetectionCounts) => {
+    setCounts((prev) => ({ ...prev, [key]: prev[key] + 1 }));
   };
 
   const handleConfirmation = (isCorrect: boolean) => {
@@ -222,11 +222,12 @@ export default function VideoStreamDeck() {
       id: Date.now(),
       currentFrame: currentFrame,
       totalFrames: totalFrames,
-      toggles: { ...toggles },
+      counts: { ...counts },
       rating: isCorrect ? 'T' : 'F',
     };
 
     setHistory((prev) => [newEntry, ...prev]);
+    setCounts({ trayWithFood: 0, trayWithoutFood: 0, food: 0 });
   };
   
   const handleExport = () => {
@@ -246,9 +247,9 @@ export default function VideoStreamDeck() {
     const rows = history.map((entry) => [
       entry.currentFrame,
       entry.totalFrames > 0 ? entry.totalFrames : 'N/A',
-      entry.toggles.trayWithFood ? "Yes" : "No",
-      entry.toggles.trayWithoutFood ? "Yes" : "No",
-      entry.toggles.food ? "Yes" : "No",
+      entry.counts.trayWithFood,
+      entry.counts.trayWithoutFood,
+      entry.counts.food,
       entry.rating,
     ].join(','));
 
@@ -275,6 +276,59 @@ export default function VideoStreamDeck() {
   const handleDeleteRow = (idToDelete: number) => {
     setHistory((prevHistory) => prevHistory.filter((entry) => entry.id !== idToDelete));
   };
+
+  const handleUpdateCountInHistory = (idToUpdate: number, key: keyof DetectionCounts, delta: number) => {
+    setHistory((prevHistory) =>
+      prevHistory.map((entry) => {
+        if (entry.id === idToUpdate) {
+          const newCount = Math.max(0, entry.counts[key] + delta);
+          return {
+            ...entry,
+            counts: {
+              ...entry.counts,
+              [key]: newCount,
+            },
+          };
+        }
+        return entry;
+      })
+    );
+  };
+  
+  const EditableCountCell = ({
+    value,
+    onIncrease,
+    onDecrease,
+  }: {
+    value: number;
+    onIncrease: () => void;
+    onDecrease: () => void;
+  }) => (
+    <TableCell className="group/cell relative text-center">
+      <span className="font-mono text-lg">{value}</span>
+      <div className="absolute inset-y-0 right-0 flex items-center opacity-0 group-hover/cell:opacity-100 transition-opacity bg-card">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          onClick={onDecrease}
+          disabled={value <= 0}
+          aria-label="Decrease"
+        >
+          <Minus className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          onClick={onIncrease}
+          aria-label="Increase"
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+    </TableCell>
+  );
 
   return (
     <>
@@ -419,27 +473,18 @@ export default function VideoStreamDeck() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-between">
-              <div className="flex flex-wrap gap-2" aria-label="Detection toggles">
-                <Button
-                  onClick={() => handleToggle('trayWithFood')}
-                  variant={toggles.trayWithFood ? 'default' : 'destructive'}
-                >
+              <div className="flex flex-wrap gap-2" aria-label="Detection Toggles">
+                <Button onClick={() => handleIncrement('trayWithFood')} variant="outline">
                   <UtensilsCrossed className="mr-2 h-4 w-4" />
-                  Tray with food
+                  Tray with food ({counts.trayWithFood})
                 </Button>
-                <Button
-                  onClick={() => handleToggle('trayWithoutFood')}
-                  variant={toggles.trayWithoutFood ? 'default' : 'destructive'}
-                >
+                <Button onClick={() => handleIncrement('trayWithoutFood')} variant="outline">
                   <PackageOpen className="mr-2 h-4 w-4" />
-                  Tray without food
+                  Tray without food ({counts.trayWithoutFood})
                 </Button>
-                <Button
-                  onClick={() => handleToggle('food')}
-                  variant={toggles.food ? 'default' : 'destructive'}
-                >
+                <Button onClick={() => handleIncrement('food')} variant="outline">
                   <Apple className="mr-2 h-4 w-4" />
-                  Food
+                  Food ({counts.food})
                 </Button>
               </div>
 
@@ -466,10 +511,10 @@ export default function VideoStreamDeck() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Current frame / total frame</TableHead>
-                    <TableHead>Tray with Food</TableHead>
-                    <TableHead>Tray without Food</TableHead>
-                    <TableHead>Food</TableHead>
-                    <TableHead>Rating</TableHead>
+                    <TableHead className="text-center">Tray with Food</TableHead>
+                    <TableHead className="text-center">Tray without Food</TableHead>
+                    <TableHead className="text-center">Food</TableHead>
+                    <TableHead className="text-center">Rating</TableHead>
                     <TableHead><span className="sr-only">Actions</span></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -480,10 +525,22 @@ export default function VideoStreamDeck() {
                         <TableCell className="font-mono">
                           {entry.currentFrame} / {entry.totalFrames > 0 ? entry.totalFrames : '...'}
                         </TableCell>
-                        <TableCell>{entry.toggles.trayWithFood ? "Yes" : "No"}</TableCell>
-                        <TableCell>{entry.toggles.trayWithoutFood ? "Yes" : "No"}</TableCell>
-                        <TableCell>{entry.toggles.food ? "Yes" : "No"}</TableCell>
-                        <TableCell className="font-bold">
+                        <EditableCountCell 
+                          value={entry.counts.trayWithFood}
+                          onIncrease={() => handleUpdateCountInHistory(entry.id, 'trayWithFood', 1)}
+                          onDecrease={() => handleUpdateCountInHistory(entry.id, 'trayWithFood', -1)}
+                        />
+                         <EditableCountCell 
+                          value={entry.counts.trayWithoutFood}
+                          onIncrease={() => handleUpdateCountInHistory(entry.id, 'trayWithoutFood', 1)}
+                          onDecrease={() => handleUpdateCountInHistory(entry.id, 'trayWithoutFood', -1)}
+                        />
+                         <EditableCountCell 
+                          value={entry.counts.food}
+                          onIncrease={() => handleUpdateCountInHistory(entry.id, 'food', 1)}
+                          onDecrease={() => handleUpdateCountInHistory(entry.id, 'food', -1)}
+                        />
+                        <TableCell className="font-bold text-center">
                           {entry.rating}
                         </TableCell>
                         <TableCell className="text-right">
