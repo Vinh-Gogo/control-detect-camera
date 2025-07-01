@@ -312,7 +312,7 @@ export default function VideoStreamDeck() {
     onIncrease: () => void;
     onDecrease: () => void;
   }) => (
-    <TableCell className="group/cell relative text-center py-2 px-4">
+    <TableCell className="group/cell relative text-center py-1 px-4">
       <span className="font-mono text-lg">{value}</span>
       <div className="absolute inset-y-0 right-0 flex items-center opacity-0 group-hover/cell:opacity-100 transition-opacity bg-card">
         <Button
@@ -539,7 +539,7 @@ export default function VideoStreamDeck() {
                   {history.length > 0 ? (
                     history.map((entry) => (
                       <TableRow key={entry.id} className="group">
-                        <TableCell className="font-mono py-2 px-4">
+                        <TableCell className="font-mono py-1 px-4">
                           {entry.currentFrame} / {entry.totalFrames > 0 ? entry.totalFrames : '...'}
                         </TableCell>
                         <EditableCountCell 
@@ -557,7 +557,7 @@ export default function VideoStreamDeck() {
                           onIncrease={() => handleUpdateCountInHistory(entry.id, 'food', 1)}
                           onDecrease={() => handleUpdateCountInHistory(entry.id, 'food', -1)}
                         />
-                        <TableCell className="group/cell relative text-center py-2 px-4">
+                        <TableCell className="group/cell relative text-center py-1 px-4">
                           {entry.rating === 'T' ? (
                             <span className="font-bold text-primary">T</span>
                           ) : (
@@ -586,11 +586,11 @@ export default function VideoStreamDeck() {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className="text-center py-2 px-4">
+                        <TableCell className="text-center py-1 px-4">
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity h-7 w-7"
                             onClick={() => handleDeleteRow(entry.id)}
                             aria-label="Delete row"
                           >
