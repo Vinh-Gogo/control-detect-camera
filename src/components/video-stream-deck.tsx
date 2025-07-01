@@ -158,102 +158,116 @@ export default function VideoStreamDeck() {
 
 
   return (
-    <>
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-sm font-mono text-muted-foreground">
-          Frame: {currentFrame} / {totalFrames > 0 ? totalFrames : '...'}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      <div>
+        <div className="flex justify-end items-center mb-4 h-10">
+          <div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="video/*"
+              className="hidden"
+            />
+            <Button onClick={handleUploadClick}>
+              <Upload className="mr-2 h-4 w-4" />
+              Upload Video
+            </Button>
+          </div>
         </div>
-        <div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            accept="video/*"
-            className="hidden"
-          />
-          <Button onClick={handleUploadClick}>
-            <Upload className="mr-2 h-4 w-4" />
-            Upload Video
-          </Button>
-        </div>
-      </div>
-      <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/10 bg-black">
-        <CardContent className="p-0">
-          <div
-            className="relative group/player aspect-video"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            <video
-              ref={videoRef}
-              className="w-full h-full object-contain"
-              onClick={togglePlayPause}
-              src={videoSrc}
-              playsInline
-              data-ai-hint="nature video"
-            >
-              Your browser does not support the video tag.
-            </video>
-            
-            <div className={cn(
-                "absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300 pointer-events-none",
-                !isPlaying ? "opacity-100" : "opacity-0 group-hover/player:opacity-100",
-            )}>
-              <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="w-20 h-20 text-white hover:bg-primary/20 pointer-events-auto rounded-full backdrop-blur-sm bg-black/20" 
-                  onClick={togglePlayPause}
-                  aria-label={isPlaying ? "Pause" : "Play"}
-              >
-                  {isPlaying ? 
-                      <Pause className="w-12 h-12 fill-white stroke-white" /> : 
-                      <Play className="w-12 h-12 fill-white stroke-white" />
-                  }
-              </Button>
-            </div>
-
+        <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/10 bg-black">
+          <CardContent className="p-0">
             <div
-              className={cn(
-                "absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/70 to-transparent transition-all duration-300",
-                isControlsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full",
-              )}
+              className="relative group/player aspect-video"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
             >
-              <div
-                  ref={progressContainerRef}
-                  className="w-full h-1.5 bg-white/30 rounded-full cursor-pointer group/progress mb-2 py-2"
-                  onClick={handleSeek}
+              <video
+                ref={videoRef}
+                className="w-full h-full object-contain"
+                onClick={togglePlayPause}
+                src={videoSrc}
+                playsInline
+                data-ai-hint="nature video"
+              >
+                Your browser does not support the video tag.
+              </video>
+              
+              <div className={cn(
+                  "absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300 pointer-events-none",
+                  !isPlaying ? "opacity-100" : "opacity-0 group-hover/player:opacity-100",
+              )}>
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="w-20 h-20 text-white hover:bg-primary/20 pointer-events-auto rounded-full backdrop-blur-sm bg-black/20" 
+                    onClick={togglePlayPause}
+                    aria-label={isPlaying ? "Pause" : "Play"}
                 >
-                  <div
-                    className="h-1.5 bg-primary rounded-full relative"
-                    style={{ width: `${progress}%` }}
-                  >
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-primary rounded-full opacity-0 group-hover/progress:opacity-100 scale-0 group-hover/progress:scale-100 transition-all duration-200" />
-                  </div>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-4 text-white">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={togglePlayPause}
-                  className="text-primary hover:text-accent hover:bg-primary/10"
-                  aria-label={isPlaying ? "Pause" : "Play"}
-                >
-                  {isPlaying ? (
-                    <Pause className="h-6 w-6 sm:h-7 sm:w-7 fill-primary" />
-                  ) : (
-                    <Play className="h-6 w-6 sm:h-7 sm:w-7 fill-primary" />
-                  )}
+                    {isPlaying ? 
+                        <Pause className="w-12 h-12 fill-white stroke-white" /> : 
+                        <Play className="w-12 h-12 fill-white stroke-white" />
+                    }
                 </Button>
-                
-                <div className="text-sm font-mono whitespace-nowrap">
-                  <span>{currentTime}</span> / <span>{duration}</span>
+              </div>
+
+              <div
+                className={cn(
+                  "absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/70 to-transparent transition-all duration-300",
+                  isControlsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full",
+                )}
+              >
+                <div
+                    ref={progressContainerRef}
+                    className="w-full h-1.5 bg-white/30 rounded-full cursor-pointer group/progress mb-2 py-2"
+                    onClick={handleSeek}
+                  >
+                    <div
+                      className="h-1.5 bg-primary rounded-full relative"
+                      style={{ width: `${progress}%` }}
+                    >
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-4 h-4 bg-primary rounded-full opacity-0 group-hover/progress:opacity-100 scale-0 group-hover/progress:scale-100 transition-all duration-200" />
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 sm:gap-4 text-white">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={togglePlayPause}
+                    className="text-primary hover:text-accent hover:bg-primary/10"
+                    aria-label={isPlaying ? "Pause" : "Play"}
+                  >
+                    {isPlaying ? (
+                      <Pause className="h-6 w-6 sm:h-7 sm:w-7 fill-primary" />
+                    ) : (
+                      <Play className="h-6 w-6 sm:h-7 sm:w-7 fill-primary" />
+                    )}
+                  </Button>
+                  
+                  <div className="text-sm font-mono whitespace-nowrap">
+                    <span>{currentTime}</span> / <span>{duration}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-    </>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="md:pt-[56px]">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <Button className="btn-gradient w-full text-lg font-semibold h-12">
+              AI Analysis
+            </Button>
+            <div className="mt-8">
+              <p className="text-sm font-semibold tracking-widest text-muted-foreground uppercase">Current Frame</p>
+              <p className="text-7xl font-bold tracking-tighter text-primary my-2">{currentFrame}</p>
+              <p className="text-sm text-muted-foreground">/ {totalFrames > 0 ? totalFrames : '...'}</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 }

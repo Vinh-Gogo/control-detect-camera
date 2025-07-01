@@ -66,3 +66,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .btn-gradient {
+    background-image: linear-gradient(to right, #ef4444, #f97316, #eab308, #22c55e, #3b82f6, #6366f1, #8b5cf6);
+    color: white;
+    border: none;
+    transition-property: opacity;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  .btn-gradient:hover {
+    opacity: 0.9;
+  }
+}
