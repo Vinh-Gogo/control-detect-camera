@@ -18,6 +18,8 @@ const formatTime = (timeInSeconds: number) => {
   )}`;
 };
 
+const FPS = 30;
+
 export default function VideoStreamDeck() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressContainerRef = useRef<HTMLDivElement>(null);
@@ -51,8 +53,7 @@ export default function VideoStreamDeck() {
       const current = video.currentTime;
       const total = video.duration;
       setCurrentTime(formatTime(current));
-      // Assuming 30fps for frame calculation. This is an approximation.
-      setCurrentFrame(Math.floor(current * 30));
+      setCurrentFrame(Math.floor(current * FPS));
       if (!isNaN(total) && total > 0) {
         setProgress((current / total) * 100);
       }
@@ -61,8 +62,7 @@ export default function VideoStreamDeck() {
     const handleLoadedMetadata = () => {
       const duration = video.duration;
       setDuration(formatTime(duration));
-      // Assuming 30fps for frame calculation. This is an approximation.
-      setTotalFrames(Math.floor(duration * 30));
+      setTotalFrames(Math.floor(duration * FPS));
     };
 
     const handleEnded = () => {
