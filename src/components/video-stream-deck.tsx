@@ -211,12 +211,12 @@ export default function VideoStreamDeck() {
 
               <div
                 className={cn(
-                  "absolute top-2 left-2 p-2 bg-black/50 text-white rounded-lg transition-opacity duration-300",
+                  "absolute top-2 left-2 px-3 py-2 bg-black/50 text-white rounded-lg transition-opacity duration-300",
                   isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
                 )}
               >
                 <div className="text-xs font-semibold tracking-widest uppercase">Frame</div>
-                <div className="text-2xl font-bold tracking-tighter">
+                <div className="text-2xl font-bold tracking-tighter whitespace-nowrap">
                   {currentFrame}
                   <span className="text-base font-normal text-white/70"> / {totalFrames > 0 ? totalFrames : '...'}</span>
                 </div>
