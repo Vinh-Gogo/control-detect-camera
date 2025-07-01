@@ -1,0 +1,34 @@
+# Docker specific files
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Git
+.git
+.gitignore
+
+# Dependencies
+node_modules
+
+# Next.js build artifacts
+.next
+out
+
+# Local development & logs
+.env
+.env*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.swp
+
+# Editor-specific
+.vscode
+
+# Other project files not needed in the web service's build context
+README.md
+python-service/
+apphosting.yaml
+components.json
+feedback.json
+src/app/models/

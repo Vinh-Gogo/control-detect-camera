@@ -7,7 +7,7 @@ import io
 app = Flask(__name__)
 
 # Load your YOLO model
-# model = YOLO('path/to/your/model.pt') 
+model = YOLO('src/app/models/last.pt') 
 
 @app.route('/detect', methods=['POST'])
 def detect():
@@ -25,25 +25,25 @@ def detect():
 
             # --- YOLO DETECTION LOGIC ---
             # Uncomment the following lines to use your YOLO model
-            # results = model(img)
-            # detections = []
-            # for result in results:
-            #     for box in result.boxes:
-            #         detections.append({
-            #             'box': [int(c) for c in box.xyxy[0]],
-            #             'label': model.names[int(box.cls)],
-            #             'confidence': float(box.conf)
-            #         })
-            # return jsonify(detections)
+            results = model(img)
+            detections = []
+            for result in results:
+                for box in result.boxes:
+                    detections.append({
+                        'box': [int(c) for c in box.xyxy[0]],
+                        'label': model.names[int(box.cls)],
+                        'confidence': float(box.conf)
+                    })
+            return jsonify(detections)
             # -----------------------------
 
-            # Dummy response for demonstration purposes
-            dummy_detections = [
-                {'box': [10, 10, 50, 50], 'label': 'trayWithFood', 'confidence': 0.95},
-                {'box': [60, 60, 100, 100], 'label': 'food', 'confidence': 0.89},
-            ]
+            # # Dummy response for demonstration purposes
+            # dummy_detections = [
+            #     {'box': [10, 10, 50, 50], 'label': 'trayWithFood', 'confidence': 0.95},
+            #     {'box': [60, 60, 100, 100], 'label': 'food', 'confidence': 0.89},
+            # ]
             
-            return jsonify(dummy_detections)
+            # return jsonify(dummy_detections)
 
         except Exception as e:
             return jsonify({'error': f'Error processing image: {str(e)}'}), 500

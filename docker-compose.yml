@@ -1,11 +1,8 @@
-version: '3.8'
-
 services:
   web:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: dispatch-monitoring-web
     ports:
       - "9002:9002"
     restart: always
@@ -17,7 +14,6 @@ services:
   api:
     build:
       context: ./python-service
-    container_name: dispatch-monitoring-api
     ports:
       - "5000:5000"
     restart: always
