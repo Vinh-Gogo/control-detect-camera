@@ -211,6 +211,19 @@ export default function VideoStreamDeck() {
 
               <div
                 className={cn(
+                  "absolute top-2 left-2 p-2 bg-black/50 text-white rounded-lg transition-opacity duration-300",
+                  isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}
+              >
+                <div className="text-xs font-semibold tracking-widest uppercase">Frame</div>
+                <div className="text-2xl font-bold tracking-tighter">
+                  {currentFrame}
+                  <span className="text-base font-normal text-white/70"> / {totalFrames > 0 ? totalFrames : '...'}</span>
+                </div>
+              </div>
+
+              <div
+                className={cn(
                   "absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/70 to-transparent transition-all duration-300",
                   isControlsVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-full",
                 )}
@@ -258,15 +271,6 @@ export default function VideoStreamDeck() {
             AI Analysis
           </Button>
         </div>
-        <Card>
-          <CardContent className="p-6 text-center">
-            <div>
-              <p className="text-sm font-semibold tracking-widest text-muted-foreground uppercase">Current Frame</p>
-              <p className="text-7xl font-bold tracking-tighter text-primary my-2">{currentFrame}</p>
-              <p className="text-sm text-muted-foreground">/ {totalFrames > 0 ? totalFrames : '...'}</p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
