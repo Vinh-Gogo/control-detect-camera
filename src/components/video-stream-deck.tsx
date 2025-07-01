@@ -44,6 +44,7 @@ export default function VideoStreamDeck() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [videoSrc, setVideoSrc] = useState("https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4");
+  const [videoFileName, setVideoFileName] = useState("flower.mp4");
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState("00:00");
@@ -187,6 +188,8 @@ export default function VideoStreamDeck() {
     if (file) {
       const url = URL.createObjectURL(file);
       setVideoSrc(url);
+      setVideoFileName(file.name);
+      setHistory([]);
       setFrameImageDataUrl(null);
       setIsPlaying(false);
       setProgress(0);
@@ -253,8 +256,12 @@ export default function VideoStreamDeck() {
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
+
+    const baseFileName = videoFileName.lastIndexOf('.') > -1 ? videoFileName.substring(0, videoFileName.lastIndexOf('.')) : videoFileName;
+    const downloadFileName = `Detection Report ${baseFileName}.csv`;
+
     link.setAttribute("href", url);
-    link.setAttribute("download", "detection-history.csv");
+    link.setAttribute("download", downloadFileName);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
