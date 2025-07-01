@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const formatTime = (timeInSeconds: number) => {
   if (isNaN(timeInSeconds) || timeInSeconds < 0) {
@@ -42,6 +43,7 @@ export default function VideoStreamDeck() {
   const progressContainerRef = useRef<HTMLDivElement>(null);
   const hideControlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const [videoSrc, setVideoSrc] = useState("https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4");
   const [videoFileName, setVideoFileName] = useState("flower.mp4");
@@ -105,7 +107,10 @@ export default function VideoStreamDeck() {
       const duration = video.duration;
       setDuration(formatTime(duration));
       setTotalFrames(Math.floor(duration * FPS));
-      setTimeout(captureFrame, 100);
+    };
+
+    const handleLoadedData = () => {
+      captureFrame();
     };
 
     const handleSeeked = () => {
@@ -120,27 +125,63 @@ export default function VideoStreamDeck() {
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
 
+    const handleError = () => {
+      if (!video) return;
+      const error = video.error;
+      let message = 'An unknown video error occurred.';
+      if (error) {
+        switch (error.code) {
+          case error.MEDIA_ERR_ABORTED:
+            message = 'The video playback was aborted by the user.';
+            break;
+          case error.MEDIA_ERR_NETWORK:
+            message = 'A network error caused the video download to fail.';
+            break;
+          case error.MEDIA_ERR_DECODE:
+            message = 'The video could not be decoded, it may be corrupt or in an unsupported format.';
+            break;
+          case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            message = 'The video format is not supported by your browser.';
+            break;
+          default:
+            message = 'An unknown error occurred while trying to play the video.';
+        }
+      }
+      toast({
+        variant: 'destructive',
+        title: 'Video Playback Error',
+        description: message,
+      });
+      setIsPlaying(false);
+    };
+
     video.addEventListener("timeupdate", handleTimeUpdate);
     video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("loadeddata", handleLoadedData);
     video.addEventListener("seeked", handleSeeked);
     video.addEventListener("ended", handleEnded);
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
+    video.addEventListener("error", handleError);
 
-    if (video.readyState >= 2) {
-      handleLoadedMetadata();
+    if (video.readyState >= 1) { // metadata loaded
+        handleLoadedMetadata();
     }
-
+    if (video.readyState >= 2) { // data for current frame available
+        handleLoadedData();
+    }
 
     return () => {
       video.removeEventListener("timeupdate", handleTimeUpdate);
       video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("loadeddata", handleLoadedData);
       video.removeEventListener("seeked", handleSeeked);
       video.removeEventListener("ended", handleEnded);
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
+      video.removeEventListener("error", handleError);
     };
-  }, [videoSrc]);
+  }, [videoSrc, toast]);
 
   const handleSeek = (e: MouseEvent<HTMLDivElement>) => {
     if (videoRef.current && progressContainerRef.current) {
@@ -370,7 +411,6 @@ export default function VideoStreamDeck() {
                   src={videoSrc}
                   playsInline
                   crossOrigin="anonymous"
-                  data-ai-hint="nature video"
                 >
                   Your browser does not support the video tag.
                 </video>
