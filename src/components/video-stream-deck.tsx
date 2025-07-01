@@ -1,9 +1,11 @@
+
 "use client";
 
 import { useState, useRef, useEffect, type MouseEvent, type ChangeEvent } from "react";
-import { Play, Pause, Upload } from "lucide-react";
+import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 const formatTime = (timeInSeconds: number) => {
@@ -19,6 +21,19 @@ const formatTime = (timeInSeconds: number) => {
 };
 
 const FPS = 30;
+
+type ToggleState = {
+  trayWithFood: boolean;
+  trayWithoutFood: boolean;
+  food: boolean;
+};
+
+type HistoryEntry = {
+  id: number;
+  frameImage: string | null;
+  toggles: ToggleState;
+  rating: 'T' | 'F';
+};
 
 export default function VideoStreamDeck() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -36,6 +51,13 @@ export default function VideoStreamDeck() {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [totalFrames, setTotalFrames] = useState(0);
   const [frameImageDataUrl, setFrameImageDataUrl] = useState<string | null>(null);
+
+  const [toggles, setToggles] = useState<ToggleState>({
+    trayWithFood: false,
+    trayWithoutFood: false,
+    food: false,
+  });
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   const togglePlayPause = () => {
     if (videoRef.current) {
@@ -187,6 +209,27 @@ export default function VideoStreamDeck() {
     }
   }, [videoSrc]);
 
+  const handleToggle = (key: keyof ToggleState) => {
+    setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const handleConfirmation = (isCorrect: boolean) => {
+    if (!frameImageDataUrl) {
+      // Optionally, add a toast or alert to inform the user
+      console.warn("No frame captured to save in history.");
+      return;
+    }
+
+    const newEntry: HistoryEntry = {
+      id: Date.now(),
+      frameImage: frameImageDataUrl,
+      toggles: { ...toggles },
+      rating: isCorrect ? 'T' : 'F',
+    };
+
+    setHistory((prev) => [newEntry, ...prev]);
+  };
+
 
   return (
     <>
@@ -322,6 +365,102 @@ export default function VideoStreamDeck() {
             </CardContent>
           </Card>
         </div>
+      </div>
+
+      <div className="mt-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Detection Controls & History</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-between">
+              <div className="flex flex-wrap gap-2" aria-label="Detection toggles">
+                <Button
+                  onClick={() => handleToggle('trayWithFood')}
+                  variant={toggles.trayWithFood ? 'default' : 'destructive'}
+                >
+                  <UtensilsCrossed className="mr-2 h-4 w-4" />
+                  Tray with food
+                </Button>
+                <Button
+                  onClick={() => handleToggle('trayWithoutFood')}
+                  variant={toggles.trayWithoutFood ? 'default' : 'destructive'}
+                >
+                  <PackageOpen className="mr-2 h-4 w-4" />
+                  Tray without food
+                </Button>
+                <Button
+                  onClick={() => handleToggle('food')}
+                  variant={toggles.food ? 'default' : 'destructive'}
+                >
+                  <Apple className="mr-2 h-4 w-4" />
+                  Food
+                </Button>
+              </div>
+
+              <div className="flex flex-wrap gap-2" aria-label="Confirmation controls">
+                <Button
+                  onClick={() => handleConfirmation(true)}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  <Check className="mr-2 h-4 w-4" />
+                  Correct
+                </Button>
+                <Button
+                  onClick={() => handleConfirmation(false)}
+                  variant="destructive"
+                >
+                  <X className="mr-2 h-4 w-4" />
+                  Incorrect
+                </Button>
+              </div>
+            </div>
+
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Photo Frame</TableHead>
+                    <TableHead>Tray with Food</TableHead>
+                    <TableHead>Tray without Food</TableHead>
+                    <TableHead>Food</TableHead>
+                    <TableHead className="text-right">Rating</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {history.length > 0 ? (
+                    history.map((entry) => (
+                      <TableRow key={entry.id}>
+                        <TableCell>
+                          {entry.frameImage && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={entry.frameImage}
+                              alt={`Frame capture at ${entry.id}`}
+                              className="w-24 h-auto rounded-md object-cover"
+                            />
+                          )}
+                        </TableCell>
+                        <TableCell>{entry.toggles.trayWithFood ? "Yes" : "No"}</TableCell>
+                        <TableCell>{entry.toggles.trayWithoutFood ? "Yes" : "No"}</TableCell>
+                        <TableCell>{entry.toggles.food ? "Yes" : "No"}</TableCell>
+                        <TableCell className="text-right font-bold">
+                          {entry.rating}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} className="h-24 text-center">
+                        No history yet. Press "Correct" or "Incorrect" to log an entry.
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </>
   );
