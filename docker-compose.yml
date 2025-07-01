@@ -9,3 +9,15 @@ services:
     ports:
       - "9002:9002"
     restart: always
+    environment:
+      - PYTHON_API_URL=http://api:5000
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./python-service
+    container_name: dispatch-monitoring-api
+    ports:
+      - "5000:5000"
+    restart: always
