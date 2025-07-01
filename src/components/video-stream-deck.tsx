@@ -160,23 +160,18 @@ export default function VideoStreamDeck() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
       <div>
-        <div className="flex items-center mb-4 gap-4">
-          <Button className="btn-gradient text-lg font-semibold h-12 flex-1">
-            AI Analysis
+        <div className="mb-4">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="video/*"
+            className="hidden"
+          />
+          <Button onClick={handleUploadClick} className="w-full h-12">
+            <Upload className="mr-2 h-4 w-4" />
+            Upload Video
           </Button>
-          <div className="flex-1">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="video/*"
-              className="hidden"
-            />
-            <Button onClick={handleUploadClick} className="w-full h-12">
-              <Upload className="mr-2 h-4 w-4" />
-              Upload Video
-            </Button>
-          </div>
         </div>
         <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/10 bg-black">
           <CardContent className="p-0">
@@ -257,7 +252,12 @@ export default function VideoStreamDeck() {
         </Card>
       </div>
 
-      <div className="md:pt-16">
+      <div>
+        <div className="mb-4">
+          <Button className="btn-gradient text-lg font-semibold h-12 w-full">
+            AI Analysis
+          </Button>
+        </div>
         <Card>
           <CardContent className="p-6 text-center">
             <div>
