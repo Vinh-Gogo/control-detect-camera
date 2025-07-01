@@ -160,11 +160,11 @@ export default function VideoStreamDeck() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
       <div>
-        <div className="flex justify-between items-center mb-4 h-12">
-          <Button className="btn-gradient text-lg font-semibold h-12">
+        <div className="flex items-center mb-4 gap-4">
+          <Button className="btn-gradient text-lg font-semibold h-12 flex-1">
             AI Analysis
           </Button>
-          <div>
+          <div className="flex-1">
             <input
               type="file"
               ref={fileInputRef}
@@ -172,7 +172,7 @@ export default function VideoStreamDeck() {
               accept="video/*"
               className="hidden"
             />
-            <Button onClick={handleUploadClick}>
+            <Button onClick={handleUploadClick} className="w-full h-12">
               <Upload className="mr-2 h-4 w-4" />
               Upload Video
             </Button>
