@@ -294,6 +294,14 @@ export default function VideoStreamDeck() {
       })
     );
   };
+
+  const handleUpdateRating = (idToUpdate: number, newRating: 'T' | 'F') => {
+    setHistory((prevHistory) =>
+      prevHistory.map((entry) =>
+        entry.id === idToUpdate ? { ...entry, rating: newRating } : entry
+      )
+    );
+  };
   
   const EditableCountCell = ({
     value,
@@ -549,12 +557,34 @@ export default function VideoStreamDeck() {
                           onIncrease={() => handleUpdateCountInHistory(entry.id, 'food', 1)}
                           onDecrease={() => handleUpdateCountInHistory(entry.id, 'food', -1)}
                         />
-                        <TableCell className="text-center py-2 px-4">
+                        <TableCell className="group/cell relative text-center py-2 px-4">
                           {entry.rating === 'T' ? (
                             <span className="font-bold text-primary">T</span>
                           ) : (
                             <span className="font-bold text-destructive">F</span>
                           )}
+                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-opacity bg-card">
+                            {entry.rating === 'T' ? (
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={() => handleUpdateRating(entry.id, 'F')}
+                                aria-label="Change to Incorrect"
+                              >
+                                F
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-700 text-white h-7 w-7 p-0"
+                                onClick={() => handleUpdateRating(entry.id, 'T')}
+                                aria-label="Change to Correct"
+                              >
+                                T
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-center py-2 px-4">
                           <Button
