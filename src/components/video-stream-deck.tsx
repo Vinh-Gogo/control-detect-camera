@@ -635,8 +635,19 @@ export default function VideoStreamDeck() {
       {/* Phần điều khiển phát hiện và lịch sử */}
       <div className="mt-8">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Detection Controls & History</CardTitle>
+            {/* Các nút hành động cho bảng */}
+            <div className="flex gap-2">
+              <Button onClick={handleRefresh} variant="outline" disabled={history.length === 0}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Refresh Table
+              </Button>
+              <Button onClick={handleExport} disabled={history.length === 0}>
+                <Download className="mr-2 h-4 w-4" />
+                Export Data
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-between">
@@ -774,17 +785,6 @@ export default function VideoStreamDeck() {
                   )}
                 </TableBody>
               </Table>
-            </div>
-            {/* Các nút hành động cho bảng */}
-            <div className="flex justify-end gap-2">
-              <Button onClick={handleRefresh} variant="outline" disabled={history.length === 0}>
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Refresh Table
-              </Button>
-              <Button onClick={handleExport} disabled={history.length === 0}>
-                <Download className="mr-2 h-4 w-4" />
-                Export Data
-              </Button>
             </div>
           </CardContent>
         </Card>
