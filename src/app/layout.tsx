@@ -2,8 +2,8 @@ import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Video Stream Deck',
-  description: 'A simple website to display a video with interactive controls.',
+  title: 'Dispatch Monitoring System',
+  description: 'A system for monitoring and annotating video dispatch feeds.',
 };
 
 export default function RootLayout({
