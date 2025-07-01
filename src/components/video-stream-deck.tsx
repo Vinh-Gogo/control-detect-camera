@@ -211,12 +211,12 @@ export default function VideoStreamDeck() {
 
               <div
                 className={cn(
-                  "absolute top-2 left-2 px-3 py-2 bg-black/50 text-white rounded-lg transition-opacity duration-300",
+                  "absolute top-2 left-2 px-3 py-2 bg-black/50 text-white rounded-lg transition-opacity duration-300 whitespace-nowrap",
                   isControlsVisible ? "opacity-100" : "opacity-0 pointer-events-none"
                 )}
               >
                 <div className="text-xs font-semibold tracking-widest uppercase">Frame</div>
-                <div className="text-2xl font-bold tracking-tighter whitespace-nowrap">
+                <div className="text-2xl font-bold tracking-tighter">
                   {currentFrame}
                   <span className="text-base font-normal text-white/70"> / {totalFrames > 0 ? totalFrames : '...'}</span>
                 </div>
@@ -271,6 +271,13 @@ export default function VideoStreamDeck() {
             AI Analysis
           </Button>
         </div>
+        <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/10 bg-card">
+          <CardContent className="p-0">
+            <div className="relative aspect-video flex items-center justify-center">
+              <p className="text-muted-foreground">AI analysis results will appear here.</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
