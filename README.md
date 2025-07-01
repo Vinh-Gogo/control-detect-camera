@@ -58,3 +58,41 @@ Dưới đây là cấu trúc cây thư mục của dự án cùng với giải 
 *   **Các file cấu hình ở gốc dự án**:
     *   `package.json`: "Trái tim" của dự án Node.js, quản lý các thư viện bên ngoài.
     *   `next.config.ts`, `tailwind.config.ts`, `tsconfig.json`: Các file này định nghĩa cách Next.js, Tailwind CSS và TypeScript hoạt động, giúp tùy chỉnh quá trình build và phát triển ứng dụng.
+
+## Hướng dẫn Cài đặt và Chạy dự án
+
+Làm theo các bước dưới đây để cài đặt và chạy dự án trên máy tính cá nhân của bạn.
+
+### 1. Tải dự án từ GitHub
+
+Mở Command Prompt (CMD) hoặc Terminal và sử dụng lệnh `git clone` để sao chép repository về máy. Thay thế `URL_REPOSITORY` bằng đường dẫn SSH hoặc HTTPS của repository trên GitHub.
+
+```bash
+git clone <URL_REPOSITORY>
+```
+
+Sau đó, di chuyển vào thư mục vừa tải về:
+
+```bash
+cd <TEN_THU_MUC_DU_AN>
+```
+
+### 2. Cài đặt các thư viện cần thiết
+
+Trong thư mục gốc của dự án, chạy lệnh sau để cài đặt tất cả các thư viện được định nghĩa trong file `package.json`:
+
+```bash
+npm install
+```
+
+Lệnh này sẽ tải và cài đặt các dependencies như React, Next.js, Tailwind CSS, ShadCN, Genkit,...
+
+### 3. Chạy ứng dụng
+
+Sau khi cài đặt thành công, sử dụng lệnh sau để khởi động server phát triển (development server):
+
+```bash
+npm run dev
+```
+
+Ứng dụng của bạn sẽ chạy tại địa chỉ `http://localhost:9002` (hoặc một cổng khác nếu cổng 9002 đã được sử dụng). Mở trình duyệt và truy cập địa chỉ này để xem trang web.
