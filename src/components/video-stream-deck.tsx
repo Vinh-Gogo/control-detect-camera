@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type MouseEvent, type ChangeEvent } from "react";
-import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download, RefreshCw } from "lucide-react";
+import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download, RefreshCw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -272,6 +272,10 @@ export default function VideoStreamDeck() {
     setHistory([]);
   };
 
+  const handleDeleteRow = (idToDelete: number) => {
+    setHistory((prevHistory) => prevHistory.filter((entry) => entry.id !== idToDelete));
+  };
+
   return (
     <>
       <canvas ref={canvasRef} className="hidden"></canvas>
@@ -465,27 +469,40 @@ export default function VideoStreamDeck() {
                     <TableHead>Tray with Food</TableHead>
                     <TableHead>Tray without Food</TableHead>
                     <TableHead>Food</TableHead>
-                    <TableHead className="text-right">Rating</TableHead>
+                    <TableHead>Rating</TableHead>
+                    <TableHead><span className="sr-only">Actions</span></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {history.length > 0 ? (
                     history.map((entry) => (
-                      <TableRow key={entry.id}>
+                      <TableRow key={entry.id} className="group">
                         <TableCell className="font-mono">
                           {entry.currentFrame} / {entry.totalFrames > 0 ? entry.totalFrames : '...'}
                         </TableCell>
                         <TableCell>{entry.toggles.trayWithFood ? "Yes" : "No"}</TableCell>
                         <TableCell>{entry.toggles.trayWithoutFood ? "Yes" : "No"}</TableCell>
                         <TableCell>{entry.toggles.food ? "Yes" : "No"}</TableCell>
-                        <TableCell className="text-right font-bold">
+                        <TableCell className="font-bold">
                           {entry.rating}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={() => handleDeleteRow(entry.id)}
+                            aria-label="Delete row"
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                            <span className="sr-only">Delete row</span>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={5} className="h-24 text-center">
+                      <TableCell colSpan={6} className="h-24 text-center">
                         No history yet. Press "Correct" or "Incorrect" to log an entry.
                       </TableCell>
                     </TableRow>
