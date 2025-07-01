@@ -304,13 +304,13 @@ export default function VideoStreamDeck() {
     onIncrease: () => void;
     onDecrease: () => void;
   }) => (
-    <TableCell className="group/cell relative text-center">
+    <TableCell className="group/cell relative text-center py-2 px-4">
       <span className="font-mono text-lg">{value}</span>
       <div className="absolute inset-y-0 right-0 flex items-center opacity-0 group-hover/cell:opacity-100 transition-opacity bg-card">
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          className="h-6 w-6 text-muted-foreground hover:text-foreground"
           onClick={onDecrease}
           disabled={value <= 0}
           aria-label="Decrease"
@@ -320,7 +320,7 @@ export default function VideoStreamDeck() {
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          className="h-6 w-6 text-muted-foreground hover:text-foreground"
           onClick={onIncrease}
           aria-label="Increase"
         >
@@ -507,22 +507,22 @@ export default function VideoStreamDeck() {
             </div>
 
             <div className="border rounded-lg">
-              <Table>
+              <Table className="table-fixed">
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Current frame / total frame</TableHead>
-                    <TableHead className="text-center">Tray with Food</TableHead>
-                    <TableHead className="text-center">Tray without Food</TableHead>
-                    <TableHead className="text-center">Food</TableHead>
-                    <TableHead className="text-center">Rating</TableHead>
-                    <TableHead><span className="sr-only">Actions</span></TableHead>
+                    <TableHead className="w-1/6">Current frame / total frame</TableHead>
+                    <TableHead className="text-center w-1/6">Tray with Food</TableHead>
+                    <TableHead className="text-center w-1/6">Tray without Food</TableHead>
+                    <TableHead className="text-center w-1/6">Food</TableHead>
+                    <TableHead className="text-center w-1/6">Rating</TableHead>
+                    <TableHead className="text-center w-1/6">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {history.length > 0 ? (
                     history.map((entry) => (
                       <TableRow key={entry.id} className="group">
-                        <TableCell className="font-mono">
+                        <TableCell className="font-mono py-2 px-4">
                           {entry.currentFrame} / {entry.totalFrames > 0 ? entry.totalFrames : '...'}
                         </TableCell>
                         <EditableCountCell 
@@ -540,10 +540,10 @@ export default function VideoStreamDeck() {
                           onIncrease={() => handleUpdateCountInHistory(entry.id, 'food', 1)}
                           onDecrease={() => handleUpdateCountInHistory(entry.id, 'food', -1)}
                         />
-                        <TableCell className="font-bold text-center">
+                        <TableCell className="font-bold text-center py-2 px-4">
                           {entry.rating}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-center py-2 px-4">
                           <Button
                             variant="ghost"
                             size="icon"
