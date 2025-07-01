@@ -474,15 +474,24 @@ export default function VideoStreamDeck() {
           <CardContent className="space-y-6">
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center justify-between">
               <div className="flex flex-wrap gap-2" aria-label="Detection Toggles">
-                <Button onClick={() => handleIncrement('trayWithFood')} variant="outline">
+                <Button 
+                  onClick={() => handleIncrement('trayWithFood')} 
+                  variant={counts.trayWithFood > 0 ? "default" : "outline"}
+                >
                   <UtensilsCrossed className="mr-2 h-4 w-4" />
                   Tray with food ({counts.trayWithFood})
                 </Button>
-                <Button onClick={() => handleIncrement('trayWithoutFood')} variant="outline">
+                <Button 
+                  onClick={() => handleIncrement('trayWithoutFood')} 
+                  variant={counts.trayWithoutFood > 0 ? "default" : "outline"}
+                >
                   <PackageOpen className="mr-2 h-4 w-4" />
                   Tray without food ({counts.trayWithoutFood})
                 </Button>
-                <Button onClick={() => handleIncrement('food')} variant="outline">
+                <Button 
+                  onClick={() => handleIncrement('food')} 
+                  variant={counts.food > 0 ? "default" : "outline"}
+                >
                   <Apple className="mr-2 h-4 w-4" />
                   Food ({counts.food})
                 </Button>
