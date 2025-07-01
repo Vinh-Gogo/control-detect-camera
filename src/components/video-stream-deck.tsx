@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type MouseEvent, type ChangeEvent } from "react";
-import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download } from "lucide-react";
+import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -268,6 +268,10 @@ export default function VideoStreamDeck() {
     document.body.removeChild(link);
   };
 
+  const handleRefresh = () => {
+    setHistory([]);
+  };
+
   return (
     <>
       <canvas ref={canvasRef} className="hidden"></canvas>
@@ -489,7 +493,11 @@ export default function VideoStreamDeck() {
                 </TableBody>
               </Table>
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
+              <Button onClick={handleRefresh} variant="outline" disabled={history.length === 0}>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Refresh Table
+              </Button>
               <Button onClick={handleExport} disabled={history.length === 0}>
                 <Download className="mr-2 h-4 w-4" />
                 Export Data
