@@ -549,8 +549,12 @@ export default function VideoStreamDeck() {
                           onIncrease={() => handleUpdateCountInHistory(entry.id, 'food', 1)}
                           onDecrease={() => handleUpdateCountInHistory(entry.id, 'food', -1)}
                         />
-                        <TableCell className="font-bold text-center py-2 px-4">
-                          {entry.rating}
+                        <TableCell className="text-center py-2 px-4">
+                          {entry.rating === 'T' ? (
+                            <span className="font-bold text-primary">T</span>
+                          ) : (
+                            <span className="font-bold text-destructive">F</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-center py-2 px-4">
                           <Button
