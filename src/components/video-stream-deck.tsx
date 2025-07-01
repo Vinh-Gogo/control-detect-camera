@@ -30,7 +30,8 @@ type ToggleState = {
 
 type HistoryEntry = {
   id: number;
-  frameImage: string | null;
+  currentFrame: number;
+  totalFrames: number;
   toggles: ToggleState;
   rating: 'T' | 'F';
 };
@@ -214,15 +215,10 @@ export default function VideoStreamDeck() {
   };
 
   const handleConfirmation = (isCorrect: boolean) => {
-    if (!frameImageDataUrl) {
-      // Optionally, add a toast or alert to inform the user
-      console.warn("No frame captured to save in history.");
-      return;
-    }
-
     const newEntry: HistoryEntry = {
       id: Date.now(),
-      frameImage: frameImageDataUrl,
+      currentFrame: currentFrame,
+      totalFrames: totalFrames,
       toggles: { ...toggles },
       rating: isCorrect ? 'T' : 'F',
     };
@@ -420,7 +416,7 @@ export default function VideoStreamDeck() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Photo Frame</TableHead>
+                    <TableHead>Current frame / total frame</TableHead>
                     <TableHead>Tray with Food</TableHead>
                     <TableHead>Tray without Food</TableHead>
                     <TableHead>Food</TableHead>
@@ -431,15 +427,8 @@ export default function VideoStreamDeck() {
                   {history.length > 0 ? (
                     history.map((entry) => (
                       <TableRow key={entry.id}>
-                        <TableCell>
-                          {entry.frameImage && (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={entry.frameImage}
-                              alt={`Frame capture at ${entry.id}`}
-                              className="w-24 h-auto rounded-md object-cover"
-                            />
-                          )}
+                        <TableCell className="font-mono">
+                          {entry.currentFrame} / {entry.totalFrames > 0 ? entry.totalFrames : '...'}
                         </TableCell>
                         <TableCell>{entry.toggles.trayWithFood ? "Yes" : "No"}</TableCell>
                         <TableCell>{entry.toggles.trayWithoutFood ? "Yes" : "No"}</TableCell>
