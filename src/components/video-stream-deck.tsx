@@ -273,8 +273,13 @@ export default function VideoStreamDeck() {
         </div>
         <Card className="overflow-hidden border-2 border-primary/20 shadow-2xl shadow-primary/10 bg-card">
           <CardContent className="p-0">
-            <div className="relative aspect-video flex items-center justify-center">
-              <p className="text-muted-foreground">AI analysis results will appear here.</p>
+            <div className="relative aspect-video flex flex-col items-center justify-center">
+              <div className="text-sm font-semibold tracking-widest uppercase text-muted-foreground">
+                Current Frame
+              </div>
+              <div className="text-7xl font-bold tracking-tighter text-foreground">
+                {currentFrame}
+              </div>
             </div>
           </CardContent>
         </Card>
