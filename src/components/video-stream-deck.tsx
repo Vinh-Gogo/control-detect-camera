@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type MouseEvent, type ChangeEvent } from "react";
-import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X } from "lucide-react";
+import { Play, Pause, Upload, UtensilsCrossed, PackageOpen, Apple, Check, X, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -225,7 +225,41 @@ export default function VideoStreamDeck() {
 
     setHistory((prev) => [newEntry, ...prev]);
   };
+  
+  const handleExport = () => {
+    if (history.length === 0) {
+      return;
+    }
 
+    const headers = [
+      "Current Frame",
+      "Total Frames",
+      "Tray with Food",
+      "Tray without Food",
+      "Food",
+      "Rating",
+    ];
+
+    const rows = history.map((entry) => [
+      entry.currentFrame,
+      entry.totalFrames > 0 ? entry.totalFrames : 'N/A',
+      entry.toggles.trayWithFood ? "Yes" : "No",
+      entry.toggles.trayWithoutFood ? "Yes" : "No",
+      entry.toggles.food ? "Yes" : "No",
+      entry.rating,
+    ].join(','));
+
+    const csvContent = [headers.join(','), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "detection-history.csv");
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <>
@@ -447,6 +481,12 @@ export default function VideoStreamDeck() {
                   )}
                 </TableBody>
               </Table>
+            </div>
+            <div className="flex justify-end">
+              <Button onClick={handleExport} disabled={history.length === 0}>
+                <Download className="mr-2 h-4 w-4" />
+                Export Data
+              </Button>
             </div>
           </CardContent>
         </Card>
