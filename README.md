@@ -1,9 +1,3 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
-
 ## Cấu trúc dự án
 
 Dưới đây là cấu trúc cây thư mục của dự án cùng với giải thích chi tiết về vai trò và mối quan hệ của từng thành phần.
@@ -87,7 +81,7 @@ npm install
 
 Lệnh này sẽ tải và cài đặt các dependencies như React, Next.js, Tailwind CSS, ShadCN, Genkit,...
 
-### 3. Chạy ứng dụng
+### 3. Chạy ứng dụng (Môi trường Development)
 
 Sau khi cài đặt thành công, sử dụng lệnh sau để khởi động server phát triển (development server):
 
@@ -96,3 +90,31 @@ npm run dev
 ```
 
 Ứng dụng của bạn sẽ chạy tại địa chỉ `http://localhost:9002` (hoặc một cổng khác nếu cổng 9002 đã được sử dụng). Mở trình duyệt và truy cập địa chỉ này để xem trang web.
+
+### 4. Chạy dự án với Docker (Môi trường Production - Khuyến nghị)
+
+Phương pháp này sẽ khởi chạy cả ứng dụng web (Next.js) và dịch vụ AI (Python/Flask) trong các container riêng biệt, đảm bảo môi trường hoạt động nhất quán và tách biệt khỏi máy tính của bạn.
+
+**Yêu cầu:**
+*   [Docker](https://www.docker.com/get-started) đã được cài đặt trên máy của bạn.
+*   [Docker Compose](https://docs.docker.com/compose/install/) (thường đi kèm với Docker Desktop).
+
+**Các bước thực hiện:**
+
+1.  **Build và Chạy Container:**
+    Mở CMD hoặc Terminal từ thư mục gốc của dự án và chạy lệnh sau:
+    ```bash
+    docker-compose up --build
+    ```
+    *   Lệnh `docker-compose up` sẽ tìm file `docker-compose.yml`, sau đó build và khởi chạy các service (`web` và `api`) được định nghĩa trong đó.
+    *   Cờ `--build` sẽ yêu cầu Docker build lại image từ đầu nếu có bất kỳ thay đổi nào trong `Dockerfile` hoặc mã nguồn, đảm bảo bạn luôn chạy phiên bản mới nhất.
+
+2.  **Truy cập ứng dụng:**
+    Sau khi các container khởi động thành công, bạn có thể truy cập ứng dụng web tại địa chỉ: `http://localhost:9002`.
+    Dịch vụ API sẽ chạy ngầm và được ứng dụng web tự động gọi đến.
+
+3.  **Dừng ứng dụng:**
+    Để dừng các container, nhấn tổ hợp phím `Ctrl + C` trong terminal đang chạy. Để xóa các container và network đã tạo, bạn có thể chạy:
+    ```bash
+    docker-compose down
+    ```
