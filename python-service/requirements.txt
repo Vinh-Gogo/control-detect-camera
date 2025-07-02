@@ -1,3 +1,12 @@
 Flask
 Pillow
-gunicorn
+uvicorn[standard]
+python-multipart
+torch
+torchvision
+opencv-python-headless # Giữ cái này, bỏ opencv-python
+jinja2
+ultralytics
+numpy
+orjson                 # Tùy chọn, giữ nếu muốn tăng tốc JSON
+gunicorn               # Tùy chọn, giữ nếu muốn dùng trong Production
