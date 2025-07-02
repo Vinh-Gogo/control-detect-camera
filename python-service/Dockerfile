@@ -13,6 +13,12 @@ RUN apt-get update && apt-get install -y \
 # Set the working directory in the container
 WORKDIR /app
 
+# Set the YOLO_CONFIG_DIR to a writable temporary directory
+ENV YOLO_CONFIG_DIR=/tmp/ultralytics_config
+
+# Create the directory and ensure it's writable (though /tmp should be by default)
+RUN mkdir -p ${YOLO_CONFIG_DIR} && chmod -R 777 ${YOLO_CONFIG_DIR}
+
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip

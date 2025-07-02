@@ -60,7 +60,7 @@ USER nextjs
 EXPOSE 9002
 
 # Thiết lập biến môi trường PORT. Next.js server sẽ tự động lắng nghe trên cổng này.
-ENV PORT 9002
+ENV PORT=9002
 
 # Lệnh để khởi động server Next.js.
 # File server.js được tạo ra bởi output 'standalone'.
